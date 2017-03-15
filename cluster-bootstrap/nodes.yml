@@ -1,0 +1,12 @@
+- name: node1
+  box: ubuntu/xenial64
+  ram: 512
+  ip: 192.168.10.101
+- name: node2
+  box: ubuntu/xenial64
+  ram: 512
+  ip: 192.168.10.102
+- name: node3
+  box: ubuntu/xenial64
+  ram: 512
+  ip: 192.168.10.103

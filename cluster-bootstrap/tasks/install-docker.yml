@@ -1,0 +1,12 @@
+---
+
+- shell: "curl -sSL https://get.docker.com/ | sh"
+  become: yes
+- service:
+    name: docker
+    state: started
+  become: yes
+- user:
+    name: adminomc
+    groups: docker
+  become: yes

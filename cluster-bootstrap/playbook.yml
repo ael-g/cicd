@@ -1,0 +1,8 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  tasks:
+    - include: tasks/install-docker.yml
