@@ -3,6 +3,15 @@
 - hosts: localhost
   connection: local
   gather_facts: yes
+  become: yes
 
   tasks:
-    - include: tasks/install-docker.yml
+    - shell: "curl -sSL https://get.docker.com/ | sh"
+    - service:
+        name: docker
+        state: started
+    - package:
+        name: ntp
+        state: latest
+    - shell: "dd if=/dev/zero of=/var/lib/osd bs=1M count=6000"
+    - shell: "losetup /dev/loop0 /var/lib/osd"
