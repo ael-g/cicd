@@ -3,50 +3,51 @@ version: '3'
 
 volumes:
   gogs-data:
-  pgdata:
+  mariadb-data:
   drone-data:
 
 services:
   gogs:
     restart: always
-    image: gogs/gogs:0.10.8
-    depends_on: [ postgresql-gogs ]
+    image: gogs/gogs:0.10.18
+    depends_on: [ mariadb-gogs ]
     ports:
       - '2222:22'
       - '8080:3000'
     volumes:
       - gogs-data:/data
 
-  postgresql-gogs:
+  mariadb-gogs:
     restart: always
-    image: postgres:9.6.2-alpine
+    image: mariadb:10.1.22
     environment:
-      - POSTGRES_DB=gogs
-      - POSTGRES_USER=gogs
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_GOGS}
+      - MYSQL_DATABASE=gogs
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_USER=gogs
+      - MYSQL_PASSWORD=gogs
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mariadb-data:/var/lib/mysql
 
-#  drone-server:
-#    image: drone/drone:0.5
-#    ports:
-#      - 8000:8000
-#    volumes:
-#      - drone-data:/var/lib/drone
-#    restart: always
-#    environment:
-#      - DRONE_OPEN=true
-#      - DRONE_SECRET=${DRONE_SECRET}
-#      - DRONE_GOGS=true
-#      - DRONE_GOGS_URL=http://gogs:3000
-#
-#  drone-agent:
-#    image: drone/drone:0.5
-#    command: agent
-#    restart: always
-#    depends_on: [ drone-server ]
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    environment:
-#      - DRONE_SERVER=ws://drone-server:8000/ws/broker
-#      - DRONE_SECRET=${DRONE_SECRET}
+  drone-server:
+    image: drone/drone:0.5
+    ports:
+      - 8081:8000
+    volumes:
+      - drone-data:/var/lib/drone
+    restart: always
+    environment:
+      - DRONE_OPEN=true
+      - DRONE_SECRET=drone
+      - DRONE_GOGS=true
+      - DRONE_GOGS_URL=http://gogs:3000
+
+  drone-agent:
+    image: drone/drone:0.5
+    command: agent
+    restart: always
+    depends_on: [ drone-server ]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=ws://drone-server:8000/ws/broker
+      - DRONE_SECRET=drone
