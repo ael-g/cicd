@@ -12,14 +12,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       srv.vm.box = servers["box"]
       srv.vm.network "private_network", ip: servers["ip"]
       srv.vm.hostname = servers["name"]
-      srv.vm.provision "ansible_local" do |ansible|
-        ansible.playbook = "playbook.yml"
-        ansible.inventory_path = "hosts.inv"
-        ansible.limit = "localhost"
-      end
       srv.vm.provider :virtualbox do |vb|
         vb.name = servers["name"]
         vb.memory = servers["ram"]
+      end
+      srv.vm.provision :hosts do |provisioner|
+        provisioner.autoconfigure = true
+        provisioner.sync_hosts = true
       end
     end
   end
