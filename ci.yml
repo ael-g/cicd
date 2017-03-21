@@ -7,13 +7,22 @@ volumes:
   drone-data:
 
 services:
+  traefik:
+    restart: always
+    image: traefik:1.2.0
+    depends_on: [ gogs, drone-server ]
+    ports:
+      - '8081:80'
+      - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   gogs:
     restart: always
     image: gogs/gogs:0.10.18
     depends_on: [ mariadb-gogs ]
     ports:
       - '2222:22'
-      - '8080:3000'
     volumes:
       - gogs-data:/data
 
@@ -29,9 +38,7 @@ services:
       - mariadb-data:/var/lib/mysql
 
   drone-server:
-    image: drone/drone:0.5
-    ports:
-      - 8081:8000
+    image: drone/drone:0.6
     volumes:
       - drone-data:/var/lib/drone
     restart: always
@@ -42,7 +49,7 @@ services:
       - DRONE_GOGS_URL=http://gogs:3000
 
   drone-agent:
-    image: drone/drone:0.5
+    image: drone/drone:0.6
     command: agent
     restart: always
     depends_on: [ drone-server ]
