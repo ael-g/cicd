@@ -1,6 +1,18 @@
 # cicd
 A set of compose files to quickly bootstrap CI/CD pipelines, chain log and monitoring tools on a Docker Swarm cluster.
 
+## Start CI pipeline
+
+```
+docker swarm init
+# We'll get rid of next line when compose file will support --attachable flag
+docker network create --attachable -d overlay ci_ci-network
+
+docker stack up -c ci.yml ci
+```
+
+Then visit `localhost:8000` to get gogs/drone url.
+
 ## Cluster bootstrap
 In the `cluster-bootstrap` are a packer template for an ubuntu 16.04 with docker 17.03.0~ce, Ceph jewel and rexray volume driver installed.
 

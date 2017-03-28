@@ -1,33 +1,46 @@
 ---
 version: '3'
 
+networks:
+  ci-network:
+    external:
+      name: ci_ci-network
+
 volumes:
   gogs-data:
   mariadb-data:
   drone-data:
+  registry-data:
 
 services:
   traefik:
-    restart: always
     image: traefik:1.2.0
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
     depends_on: [ gogs, drone-server ]
     ports:
       - '8081:80'
       - '8080:8080'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+    networks:
+      - ci-network
 
   gogs:
-    restart: always
     image: gogs/gogs:0.10.18
     depends_on: [ mariadb-gogs ]
     ports:
       - '2222:22'
     volumes:
       - gogs-data:/data
+    labels:
+      - "traefik.port=3000"
+      - "traefik.docker.network=ci-network"
+      - "traefik.frontend.rule=Host:gogs.${DOMAIN}"
+    networks:
+      - ci-network
 
   mariadb-gogs:
-    restart: always
     image: mariadb:10.1.22
     environment:
       - MYSQL_DATABASE=gogs
@@ -36,25 +49,38 @@ services:
       - MYSQL_PASSWORD=gogs
     volumes:
       - mariadb-data:/var/lib/mysql
+    networks:
+      - ci-network
 
   drone-server:
-    image: drone/drone:0.6
+    image: ael/drone
     volumes:
       - drone-data:/var/lib/drone
-    restart: always
     environment:
       - DRONE_OPEN=true
       - DRONE_SECRET=drone
       - DRONE_GOGS=true
       - DRONE_GOGS_URL=http://gogs:3000
+      - EXTERNAL_NETWORKS=ci_ci-network
+    labels:
+      - "traefik.port=8000"
+#      - "traefik.frontend.rule=Host:drone.${DOMAIN}"
+    networks:
+      - ci-network
 
   drone-agent:
-    image: drone/drone:0.6
+    image: ael/drone
     command: agent
-    restart: always
     depends_on: [ drone-server ]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - DRONE_SERVER=ws://drone-server:8000/ws/broker
       - DRONE_SECRET=drone
+    networks:
+      - ci-network
+
+  registry:
+    image: registry:2.6
+    volumes:
+      - registry-data:/var/lib/registry
