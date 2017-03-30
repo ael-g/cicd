@@ -13,29 +13,13 @@ volumes:
   registry-data:
 
 services:
-  traefik:
-    image: traefik:1.2.0
-    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
-    depends_on: [ gogs, drone-server ]
-    ports:
-      - '8081:80'
-      - '8080:8080'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/null:/traefik.toml
-    labels:
-      - "traefik.frontend.rule=Host:traefik.localhost"
-    networks:
-      - ci-network
-
   gogs:
     image: gogs/gogs:0.10.18
     depends_on: [ mariadb-gogs ]
-    ports:
-      - '2222:22'
     volumes:
       - gogs-data:/data
     labels:
+      - "traefik.enable=true"
       - "traefik.port=3000"
       - "traefik.docker.network=ci_ci-network"
       - "traefik.frontend.rule=Host:gogs.localhost"
@@ -60,11 +44,13 @@ services:
       - drone-data:/var/lib/drone
     environment:
       - DRONE_OPEN=true
+      - DRONE_ADMIN=ael
       - DRONE_SECRET=drone
       - DRONE_GOGS=true
       - DRONE_GOGS_URL=http://gogs:3000
       - EXTERNAL_NETWORKS=ci_ci-network
     labels:
+      - "traefik.enable=true"
       - "traefik.port=8000"
       - "traefik.frontend.rule=Host:drone.localhost"
     networks:
@@ -97,6 +83,7 @@ services:
       - "ENV_DOCKER_REGISTRY_HOST=registry"
       - "ENV_DOCKER_REGISTRY_PORT=5000"
     labels:
+      - "traefik.enable=true"
       - "traefik.port=80"
       - "traefik.frontend.rule=Host:registry-ui.localhost"
     networks:

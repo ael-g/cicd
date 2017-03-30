@@ -1,0 +1,36 @@
+---
+version: '3'
+
+volumes:
+  prometheus-data:
+  grafana-data:
+
+services:
+  prometheus:
+    image: prom/prometheus:v1.5.2
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '-alertmanager.url=http://alertmanager:9093'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=9090"
+      - "traefik.frontend.rule=Host:prometheus.localhost"
+
+  alertmanager:
+    image: prom/alertmanager:v0.5.1
+    volumes:
+      - ./alertmanager.yml:/alertmanager.yml
+
+  grafana:
+    image: grafana/grafana:4.2.0
+    depends_on: [ prometheus ]
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - "GF_SECURITY_ADMIN_PASSWORD=grafana"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=3000"
+      - "traefik.frontend.rule=Host:grafana.localhost"

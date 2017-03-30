@@ -1,0 +1,24 @@
+---
+version: '3'
+
+networks:
+  ci-network:
+    external:
+      name: ci_ci-network
+
+services:
+  traefik:
+    image: traefik:1.2.0
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG --docker.exposedbydefault=false
+    depends_on: [ gogs, drone-server ]
+    ports:
+      - '8081:80'
+      - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:traefik.localhost"
+    networks:
+      - ci-network
