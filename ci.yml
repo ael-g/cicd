@@ -21,8 +21,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=3000"
-      - "traefik.docker.network=ci_ci-network"
-      - "traefik.frontend.rule=Host:gogs.localhost"
+      - "traefik.frontend.rule=Host:gogs.${DOMAIN}"
     networks:
       - ci-network
 
@@ -52,7 +51,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=8000"
-      - "traefik.frontend.rule=Host:drone.localhost"
+      - "traefik.frontend.rule=Host:drone.${DOMAIN}"
     networks:
       - ci-network
 
@@ -85,6 +84,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=80"
-      - "traefik.frontend.rule=Host:registry-ui.localhost"
+      - "traefik.frontend.rule=Host:registry-ui.${DOMAIN}"
     networks:
       - ci-network

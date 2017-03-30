@@ -5,6 +5,9 @@ networks:
   ci-network:
     external:
       name: ci_ci-network
+  monitoring-network:
+    external:
+      name: monitoring_monitoring-network
 
 services:
   traefik:
@@ -17,8 +20,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/null:/traefik.toml
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:traefik.localhost"
     networks:
       - ci-network
+      - monitoring-network

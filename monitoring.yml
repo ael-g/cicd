@@ -1,6 +1,11 @@
 ---
 version: '3'
 
+networks:
+  monitoring-network:
+    external:
+      name: monitoring_monitoring-network
+
 volumes:
   prometheus-data:
   grafana-data:
@@ -12,16 +17,21 @@ services:
       - prometheus-data:/prometheus
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command:
-      - '-alertmanager.url=http://alertmanager:9093'
+      - "-alertmanager.url=http://alertmanager:9093"
+      - "-config.file=/etc/prometheus/prometheus.yml"
     labels:
       - "traefik.enable=true"
       - "traefik.port=9090"
-      - "traefik.frontend.rule=Host:prometheus.localhost"
+      - "traefik.frontend.rule=Host:prometheus.${DOMAIN}"
+    networks:
+      - monitoring-network
 
   alertmanager:
     image: prom/alertmanager:v0.5.1
     volumes:
       - ./alertmanager.yml:/alertmanager.yml
+    networks:
+      - monitoring-network
 
   grafana:
     image: grafana/grafana:4.2.0
@@ -33,4 +43,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=3000"
-      - "traefik.frontend.rule=Host:grafana.localhost"
+      - "traefik.frontend.rule=Host:grafana.${DOMAIN}"
+    networks:
+      - monitoring-network
+
