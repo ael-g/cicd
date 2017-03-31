@@ -38,7 +38,7 @@ services:
       - ci-network
 
   drone-server:
-    image: ael/drone
+    image: aelg/drone
     volumes:
       - drone-data:/var/lib/drone
     environment:
@@ -56,7 +56,7 @@ services:
       - ci-network
 
   drone-agent:
-    image: ael/drone
+    image: aelg/drone
     command: agent
     depends_on: [ drone-server ]
     volumes:
