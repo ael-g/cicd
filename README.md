@@ -16,6 +16,9 @@ docker stack up -c front.yml front
 
 Then visit `localhost:8000` to get gogs/drone url.
 
+## Grafana dashboards
+https://grafana.com/dashboards/395
+
 ## Cluster bootstrap
 In the `cluster-bootstrap` are a packer template for an ubuntu 16.04 with docker 17.03.0~ce, Ceph jewel and rexray volume driver installed.
 

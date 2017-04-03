@@ -27,18 +27,28 @@ services:
     networks:
       - monitoring-network
 
-#  node-exporter:
-#    image: prom/node-exporter:v0.14.0
-#    volumes:
-#      - "/proc:/host/proc"
-#      - "/sys:/host/sys"
-#      - "/etc/hostname:/etc/host_hostname"
-#    command:
-#      - "-collector.procfs /host/proc"
-#      - "-collector.sysfs /host/sys"
-#      - "-collector.filesystem.ignored-mount-points \"^/(sys|proc|dev|host|etc)($|/)\""
-#    networks:
-#      - monitoring-network
+  cadvisor:
+    image: google/cadvisor:v0.25.0
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitoring-network
+
+  node-exporter:
+    image: prom/node-exporter:v0.14.0
+    volumes:
+      - "/proc:/host/proc"
+      - "/sys:/host/sys"
+      - "/etc/hostname:/etc/host_hostname"
+    command:
+      - "-collector.procfs=/host/proc"
+      - "-collector.sysfs=/host/sys"
+ #     - "-collector.filesystem.ignored-mount-points \"^/(sys|proc|dev|host|etc)($|/)\""
+    networks:
+      - monitoring-network
 
   blackbox-exporter:
     image: prom/blackbox-exporter:v0.4.0
@@ -59,12 +69,12 @@ services:
     depends_on: [ prometheus ]
     volumes:
       - grafana-data:/var/lib/grafana
-    environment:
-      - "GF_AUTH_BASIC_ENABLED=false"
     labels:
       - "traefik.enable=true"
       - "traefik.port=3000"
       - "traefik.frontend.rule=Host:grafana.${DOMAIN}"
+    environment:
+      - "GF_SECURITY_ADMIN_PASSWORD=grafana"
     networks:
       - monitoring-network
 
@@ -86,20 +96,3 @@ services:
 #      - "traefik.frontend.rule=Host:kibana.${DOMAIN}"
 #    networks:
 #      - monitoring-network
-
-#  metricbeat:
-#    image: athieriot/metricbeat:5.2.0
-#    depends_on: [ elasticsearch ]
-#    pid: host
-#    volumes:
-#      - "/proc:/hostfs/proc:ro"
-#      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
-#      - "/:/hostfs:ro"
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#      - "./metricbeat.yml:/metricbeat/metricbeat.yml"
-#    command:
-#      - "-system.hostfs=/hostfs"
-#    networks:
-#      - monitoring-network
-#    deploy:
-#      mode: global
