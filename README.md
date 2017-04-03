@@ -12,6 +12,7 @@ docker network create -d overlay monitoring_monitoring-network
 
 Start the services:
 ```
+export DOMAIN=localhost       # (or example.com)
 docker stack up -c ci.yml ci
 docker stack up -c monitoring.yml monitoring
 docker stack up -c front.yml front
