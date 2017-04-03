@@ -8,10 +8,16 @@ docker swarm init
 # We'll get rid of next line when compose file will support --attachable flag
 docker network create --attachable -d overlay ci_ci-network
 docker network create -d overlay monitoring_monitoring-network
+```
 
+Start the services:
+```
+export DOMAIN=localhost       # (or example.com)
 docker stack up -c ci.yml ci
 docker stack up -c monitoring.yml monitoring
 docker stack up -c front.yml front
+# or just 
+make
 ```
 
 Then visit `localhost:8000` to get gogs/drone url.
