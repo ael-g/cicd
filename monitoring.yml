@@ -36,6 +36,8 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
       - monitoring-network
+    deploy:
+      mode: global
 
   node-exporter:
     image: prom/node-exporter:v0.14.0
@@ -46,9 +48,11 @@ services:
     command:
       - "-collector.procfs=/host/proc"
       - "-collector.sysfs=/host/sys"
- #     - "-collector.filesystem.ignored-mount-points \"^/(sys|proc|dev|host|etc)($|/)\""
+      - "-collector.filesystem.ignored-mount-points \"^/(sys|proc|dev|host|etc)($$|/)\""
     networks:
       - monitoring-network
+    deploy:
+      mode: global
 
   blackbox-exporter:
     image: prom/blackbox-exporter:v0.4.0
