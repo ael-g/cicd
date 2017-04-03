@@ -24,6 +24,7 @@ Then visit `localhost:8000` to get gogs/drone url.
 
 ## Grafana dashboards
 https://grafana.com/dashboards/395
+
 https://grafana.com/dashboards/405
 
 ## Cluster bootstrap
