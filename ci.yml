@@ -18,10 +18,11 @@ services:
     depends_on: [ mariadb-gogs ]
     volumes:
       - gogs-data:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=3000"
-      - "traefik.frontend.rule=Host:gogs.${DOMAIN}"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=3000"
+        - "traefik.frontend.rule=Host:gogs.${DOMAIN}"
     networks:
       - ci-network
 
@@ -48,10 +49,11 @@ services:
       - DRONE_GOGS=true
       - DRONE_GOGS_URL=http://gogs:3000
       - EXTERNAL_NETWORKS=ci_ci-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=8000"
-      - "traefik.frontend.rule=Host:drone.${DOMAIN}"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=8000"
+        - "traefik.frontend.rule=Host:drone.${DOMAIN}"
     networks:
       - ci-network
 
@@ -81,9 +83,10 @@ services:
     environment:
       - "ENV_DOCKER_REGISTRY_HOST=registry"
       - "ENV_DOCKER_REGISTRY_PORT=5000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=80"
-      - "traefik.frontend.rule=Host:registry-ui.${DOMAIN}"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=80"
+        - "traefik.frontend.rule=Host:registry-ui.${DOMAIN}"
     networks:
       - ci-network
