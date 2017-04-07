@@ -41,18 +41,15 @@ services:
       mode: global
 
   node-exporter:
-    image: basi/node-exporter:v1.13.0
+    image: prom/node-exporter:v0.14.0
     volumes:
       - "/proc:/host/proc"
       - "/sys:/host/sys"
-      - "/etc/hostname:/etc/host_hostname"
     command:
       - "-collector.procfs=/host/proc"
       - "-collector.sysfs=/host/sys"
-      - "-collector.textfile.directory=/etc/node-exporter/"
-#      - "-collectors.enabled=\"conntrack,diskstats,loadavg,meminfo,netstat,stat,time,vmstat\""
-    environment:
-      - "HOST_HOSTNAME=/etc/host_hostname"
+      - '-collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+      - "-collectors.enabled=conntrack,cpu,filesystem,loadavg,meminfo" 
     networks:
       - monitoring-network
     deploy:
