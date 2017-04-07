@@ -1,9 +1,9 @@
 modules:
   http_2xx:
     prober: http
-    timeout: 5s
+    timeout: 15s
     http:
       valid_status_codes: []  # Defaults to 2xx
       method: GET
       headers:
-        Host: localhost
+        Host: 
