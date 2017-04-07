@@ -58,7 +58,7 @@ services:
   blackbox-exporter:
     image: prom/blackbox-exporter:v0.4.0
     volumes:
-      - "./backbox.yml:/config/"
+      - "./blackbox.yml:/config/"
     networks:
       - monitoring-network
 
