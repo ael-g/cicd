@@ -41,7 +41,7 @@ services:
       mode: global
 
   node-exporter:
-    image: prom/node-exporter:v0.14.0
+    image: basi/node-exporter:v1.13.0
     volumes:
       - "/proc:/host/proc"
       - "/sys:/host/sys"
@@ -49,6 +49,10 @@ services:
     command:
       - "-collector.procfs=/host/proc"
       - "-collector.sysfs=/host/sys"
+      - "-collector.textfile.directory=/etc/node-exporter/"
+#      - "-collectors.enabled=\"conntrack,diskstats,loadavg,meminfo,netstat,stat,time,vmstat\""
+    environment:
+      - "HOST_HOSTNAME=/etc/host_hostname"
     networks:
       - monitoring-network
     deploy:
@@ -80,6 +84,7 @@ services:
         - "traefik.frontend.rule=Host:grafana.${DOMAIN}"
     environment:
       - "GF_SECURITY_ADMIN_PASSWORD=grafana"
+      - "GF_USERS_ALLOW_SIGN_UP=false"
     networks:
       - monitoring-network
 
