@@ -20,6 +20,7 @@ services:
       - gogs-data:/data
     deploy:
       labels:
+        - "traefik.frontend.entryPoints=http"
         - "traefik.enable=true"
         - "traefik.port=3000"
         - "traefik.frontend.rule=Host:gogs.${DOMAIN}"
@@ -51,6 +52,7 @@ services:
       - EXTERNAL_NETWORKS=ci_ci-network
     deploy:
       labels:
+        - "traefik.frontend.entryPoints=http"
         - "traefik.enable=true"
         - "traefik.port=8000"
         - "traefik.frontend.rule=Host:drone.${DOMAIN}"
@@ -85,6 +87,7 @@ services:
       - "ENV_DOCKER_REGISTRY_PORT=5000"
     deploy:
       labels:
+        - "traefik.frontend.entryPoints=http"
         - "traefik.enable=true"
         - "traefik.port=80"
         - "traefik.frontend.rule=Host:registry-ui.${DOMAIN}"
