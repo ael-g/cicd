@@ -22,6 +22,7 @@ services:
       - "-config.file=/etc/prometheus/prometheus.yml"
     deploy:
       labels:
+        - "traefik.frontend.entryPoints=http"
         - "traefik.enable=true"
         - "traefik.port=9090"
         - "traefik.frontend.rule=Host:prometheus.${DOMAIN}"
@@ -76,6 +77,7 @@ services:
       - grafana-data:/var/lib/grafana
     deploy:
       labels:
+        - "traefik.frontend.entryPoints=http"
         - "traefik.enable=true"
         - "traefik.port=3000"
         - "traefik.frontend.rule=Host:grafana.${DOMAIN}"
