@@ -1,0 +1,13 @@
+---
+jobs:
+- name: "global"
+  interval: '30s'
+  connections:
+  - 'mysql://$USER:$PASSWORD@(127.0.0.1:3306)/$DB'
+  queries:
+  - name: "nb_users"
+    help: "Number of users in db"
+    values:
+      - "count"
+    query:  |
+        select COUNT(*) as count from users;
