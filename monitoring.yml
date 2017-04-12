@@ -29,40 +29,6 @@ services:
     networks:
       - monitoring-network
 
-  cadvisor:
-    image: google/cadvisor:v0.25.0
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    networks:
-      - monitoring-network
-    deploy:
-      mode: global
-
-  node-exporter:
-    image: prom/node-exporter:v0.14.0
-    volumes:
-      - "/proc:/host/proc"
-      - "/sys:/host/sys"
-    command:
-      - "-collector.procfs=/host/proc"
-      - "-collector.sysfs=/host/sys"
-      - '-collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-      - "-collectors.enabled=conntrack,cpu,filesystem,loadavg,meminfo,netdev,netstat" 
-    networks:
-      - monitoring-network
-    deploy:
-      mode: global
-
-  blackbox-exporter:
-    image: prom/blackbox-exporter:v0.4.0
-    volumes:
-      - "./blackbox.yml:/etc/blackbox_exporter/config.yml"
-    networks:
-      - monitoring-network
-
   alertmanager:
     image: prom/alertmanager:v0.5.1
     volumes:

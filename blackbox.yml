@@ -1,5 +1,5 @@
 modules:
-  http_2xx:
+  ssl_website:
     prober: http
     timeout: 15s
     http:
@@ -7,3 +7,4 @@ modules:
       method: GET
       headers:
         Host: 
+      fail_if_not_ssl: false
