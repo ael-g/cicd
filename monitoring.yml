@@ -23,6 +23,7 @@ services:
     deploy:
       labels:
         - "traefik.frontend.entryPoints=http"
+        - "traefik.docker.network=monitoring_monitoring-network"
         - "traefik.enable=true"
         - "traefik.port=9090"
         - "traefik.frontend.rule=Host:prometheus.${DOMAIN}"
@@ -44,6 +45,7 @@ services:
     deploy:
       labels:
         - "traefik.frontend.entryPoints=http"
+        - "traefik.docker.network=monitoring_monitoring-network"
         - "traefik.enable=true"
         - "traefik.port=3000"
         - "traefik.frontend.rule=Host:grafana.${DOMAIN}"
