@@ -1,7 +1,7 @@
- sum by (instance)(irate(node_cpu{mode=~"system|user|iowait",job="node-exporter"}[5m]))
- node_load1{job="node-exporter"}
- node_memory_Active{job="node-exporter"}
- 100.0 - 100 * (node_filesystem_free{job="node-exporter",mountpoint='/',device!='none'} / node_filesystem_size{job="node-exporter",mountpoint='/',device!='none'})
- node_netstat_Tcp_CurrEstab{job="node-exporter"}
+ sum by (instance)(irate(node_cpu{mode=~"system|user|iowait",job="node_exporter"}[5m]))
+ node_load1{job="node_exporter"}
+ node_memory_Active{job="node_exporter"}
+ 100.0 - 100 * (node_filesystem_free{job="node_exporter",mountpoint='/',device!='none'} / node_filesystem_size{job="node-exporter",mountpoint='/',device!='none'})
+ node_netstat_Tcp_CurrEstab{job="node_exporter"}
  probe_duration_seconds{job="blackbox",instance!="blackbox-exporter:9115"}
  probe_success{job="blackbox",instance!="blackbox-exporter:9115"}
