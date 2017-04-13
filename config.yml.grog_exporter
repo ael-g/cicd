@@ -1,0 +1,19 @@
+global:
+    config_version: 2
+input:
+    type: file
+    path: /var/log/apache2/access.log
+    readall: false
+grok:
+    patterns_dir: ./patterns
+metrics:
+    - type: counter
+      name: access_counter
+      help: Access vhost
+      match: "%{IPORHOST:vhost}:%{POSINT:port} %{COMMONAPACHELOG}"
+      labels:
+          vhost: '{{.vhost}}'
+          clientip: '{{.clientip}}'
+server:
+    host: localhost
+    port: 9144
