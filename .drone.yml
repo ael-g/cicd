@@ -3,4 +3,3 @@ pipeline:
     image: node:8-alpine
     commands:
       - echo $${PLOP}
-    secrets: [ plop ]
