@@ -2,4 +2,4 @@ pipeline:
   test:
     image: node:8-alpine
     commands:
-      - echo $plop
+      - echo $$plop
