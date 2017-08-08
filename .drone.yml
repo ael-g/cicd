@@ -2,4 +2,5 @@ pipeline:
   test:
     image: node:8-alpine
     commands:
-      - echo $$PLOP
+      - echo ${PLOP}
+    secrets: [ plop ]
